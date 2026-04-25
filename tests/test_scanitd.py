@@ -1,18 +1,13 @@
-#!/usr/bin/env python
+""""""
 
-"""Tests for `scanitd` package."""
-
-import unittest
+from scanitd import __PACKAGE_NAME__, __version__
 
 
-class TestScanitd(unittest.TestCase):
-    """Tests for `scanitd` package."""
+def test_package_name_is_defined() -> None:
+    assert __PACKAGE_NAME__ == "ScanITD"
 
-    def setUp(self):
-        """Set up test fixtures, if any."""
 
-    def tearDown(self):
-        """Tear down test fixtures, if any."""
-
-    def test_000_something(self):
-        """Test something."""
+def test_version_is_semver_like() -> None:
+    parts = __version__.split(".")
+    assert len(parts) == 3
+    assert all(part.isdigit() for part in parts)
