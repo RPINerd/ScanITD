@@ -37,48 +37,46 @@ Request features on the [Issue Tracker].
 
 ## How to set up your development environment
 
-You need Python 3.9+ and the following tools:
-
-- [Poetry]
-- [Nox]
-- [nox-poetry]
+You need Python 3.10+ and [uv].
 
 Install the package with development requirements:
 
 ```console
-$ poetry install
+$ uv sync --all-groups
 ```
 
 You can now run an interactive Python session,
 or the command-line interface:
 
 ```console
-$ poetry run python
+$ uv run python
 ```
 
-[poetry]: https://python-poetry.org/
-[nox]: https://nox.thea.codes/
-[nox-poetry]: https://nox-poetry.readthedocs.io/
+[uv]: https://docs.astral.sh/uv/
 
 ## How to test the project
 
 Run the full test suite:
 
 ```console
-$ nox
+$ uv run pytest
 ```
 
-List the available Nox sessions:
+Run lint and type checks:
 
 ```console
-$ nox --list-sessions
+$ uv run ruff check src tests
+$ uv run mypy src/scanitd
 ```
 
-You can also run a specific Nox session.
-For example, invoke the unit test suite like this:
+Run tests against all supported Python versions:
 
 ```console
-$ nox --session=tests
+$ uv run --python 3.10 pytest
+$ uv run --python 3.11 pytest
+$ uv run --python 3.12 pytest
+$ uv run --python 3.13 pytest
+$ uv run --python 3.14 pytest
 ```
 
 Unit tests are located in the _tests_ directory,
@@ -92,7 +90,7 @@ Open a [pull request] to submit changes to this project.
 
 Your pull request needs to meet the following guidelines for acceptance:
 
-- The Nox test suite must pass without errors and warnings.
+- Lint, type checks, and pytest must pass without errors and warnings.
 - Include unit tests. This project maintains 100% code coverage.
 - If your changes add functionality, update the documentation accordingly.
 
@@ -101,7 +99,7 @@ Feel free to submit early, though—we can always iterate on this.
 To run linting and code formatting checks before committing your change, you can install pre-commit as a Git hook by running the following command:
 
 ```console
-$ nox --session=pre-commit -- install
+$ uv run pre-commit install
 ```
 
 It is recommended to open an issue before starting work on anything.
