@@ -1,10 +1,10 @@
 """Type of the scanitd2."""
 
-from typing import Protocol
-from typing import Any
+from typing import Any, Protocol
 
 
 class LoggerType(Protocol):
+
     """Logger type."""
 
     def trace(self, msg: str) -> None:

@@ -2,13 +2,12 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass, field
-from typing import List, Tuple
 
 
 @dataclass
 class CigarResult:
-    cigartuples: List[Tuple[int, int]] = field(default_factory=list)
-    cigartuples_without_soft: List[Tuple[int, int]] = field(default_factory=list)
+    cigartuples: list[tuple[int, int]] = field(default_factory=list)
+    cigartuples_without_soft: list[tuple[int, int]] = field(default_factory=list)
     lt_soft_len: int = 0
     rt_soft_len: int = 0
     read_match: int = 0
