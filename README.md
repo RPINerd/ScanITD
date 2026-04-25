@@ -7,22 +7,22 @@
 
 # 📦 Installation
 
-ScanITD can be installed using pip, the Python package installer.
+ScanITD supports Python 3.10 through 3.14 and uses uv for environment management.
 Follow these steps to install:
 
-1. Ensure you have Python 3.10 or later installed on your system.
+1. Ensure uv is installed and available in your shell.
 
-2. Create a virtual environment (recommended):
+2. Create and activate a virtual environment:
 
    ```bash
-   python -m venv scanitd_env
+    uv venv scanitd_env
    source scanitd_env/bin/activate  # On Windows use `scanitd_env\Scripts\activate`
    ```
 
 3. Install ScanITD:
 
    ```bash
-   pip install scanitd
+    uv pip install scanitd
    ```
 
 4. Verify the installation:

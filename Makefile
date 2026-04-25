@@ -1,4 +1,4 @@
-.PHONY: clean clean-build clean-pyc clean-test coverage dist docs help install lint lint/flake8
+.PHONY: clean clean-build clean-pyc clean-test coverage dist docs format help install lint test test-all sync
 
 .DEFAULT_GOAL := help
 
@@ -22,10 +22,13 @@ for line in sys.stdin:
 endef
 export PRINT_HELP_PYSCRIPT
 
-BROWSER := python -c "$$BROWSER_PYSCRIPT"
+BROWSER := uv run python -c "$$BROWSER_PYSCRIPT"
 
 help:
-	@python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+	@uv run python -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
+
+sync: ## install dependencies with uv (including dev)
+	uv sync --all-groups
 
 clean: clean-build clean-pyc clean-test ## remove all build, test, coverage and Python artifacts
 
@@ -48,28 +51,32 @@ clean-test: ## remove test and coverage artifacts
 	rm -fr htmlcov/
 	rm -fr .pytest_cache
 
-lint/flake8: ## check style with flake8
-	flake8 scanitd tests
+lint: ## run ruff lint checks
+	uv run ruff check src tests
 
-
-lint: lint/flake8 ## check style
+format: ## run ruff formatter
+	uv run ruff format src tests
 
 test: ## run tests quickly with the default Python
-	python setup.py test
+	uv run pytest
 
-test-all: ## run tests on every Python version with tox
-	tox
+test-all: ## run tests on supported Python versions with uv
+	uv run --python 3.10 pytest
+	uv run --python 3.11 pytest
+	uv run --python 3.12 pytest
+	uv run --python 3.13 pytest
+	uv run --python 3.14 pytest
 
 coverage: ## check code coverage quickly with the default Python
-	coverage run --source scanitd setup.py test
-	coverage report -m
-	coverage html
+	uv run coverage run --source scanitd -m pytest
+	uv run coverage report -m
+	uv run coverage html
 	$(BROWSER) htmlcov/index.html
 
 docs: ## generate Sphinx HTML documentation, including API docs
 	rm -f docs/scanitd.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ scanitd
+	uv run sphinx-apidoc -o docs/ src/scanitd
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	$(BROWSER) docs/_build/html/index.html
@@ -78,12 +85,11 @@ servedocs: docs ## compile the docs watching for changes
 	watchmedo shell-command -p '*.rst' -c '$(MAKE) -C docs html' -R -D .
 
 release: dist ## package and upload a release
-	twine upload dist/*
+	uv run twine upload dist/*
 
 dist: clean ## builds source and wheel package
-	python setup.py sdist
-	python setup.py bdist_wheel
+	uv build
 	ls -l dist
 
 install: clean ## install the package to the active Python's site-packages
-	python setup.py install
+	uv pip install .
