@@ -6,7 +6,8 @@ import pytest
 import typer
 from typer.testing import CliRunner
 
-from scanitd.cli.cli import app, itd_len_type
+from scanitd import __version__
+from scanitd.cli.cli import LogLevel, app, itd_len_type, version_callback
 
 
 runner = CliRunner()
@@ -19,6 +20,26 @@ def test_itd_len_type_rejects_negative() -> None:
 
 def test_itd_len_type_accepts_positive() -> None:
     assert itd_len_type(10) == 10
+
+
+def test_version_callback_exits_and_prints(capsys: pytest.CaptureFixture[str]) -> None:
+    with pytest.raises(typer.Exit):
+        version_callback(True)
+
+    captured = capsys.readouterr()
+    assert f"ScanITD version: {__version__}" in captured.out
+
+
+def test_version_callback_noop_when_false() -> None:
+    assert version_callback(False) is None
+
+
+def test_log_level_values_are_expected() -> None:
+    assert LogLevel.INFO.value == "info"
+    assert LogLevel.WARNING.value == "warning"
+    assert LogLevel.ERROR.value == "error"
+    assert LogLevel.DEBUG.value == "debug"
+    assert LogLevel.TRACE.value == "trace"
 
 
 def test_cli_main_success(monkeypatch: pytest.MonkeyPatch, tmp_path: Path) -> None:
